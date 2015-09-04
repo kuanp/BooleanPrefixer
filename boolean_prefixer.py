@@ -106,9 +106,13 @@ class BooleanPrefixer:
 				self.processLastExpr(operatorStack, outputStack) 
 			
 			# we are done!
-			return outputStack.pop()
+			if (outputStack):
+				return outputStack.pop()
+			else:
+				print ("No constants or variables entered")
+				exit(1)
 		else:
-			print("Yet to read file, either call this function with a filename or initialize with a filename.")
+			("Yet to read file, either call this function with a filename or initialize with a filename.")
 			exit(1)
 	
 	def processLastExpr(self, operatorStack, outputStack):
@@ -155,8 +159,6 @@ class BooleanPrefixer:
 				# no constants, just append. 
 				outputStack.append("(" + operator + " " + arg1 + " " + arg2 + ")")
 			
-			
-	
 	def readTokens(self, filename):
 		""" 
 		Warning: if called on a prefixer that already has tokens read in, this will overwrite 
@@ -175,13 +177,13 @@ class BooleanPrefixer:
 					for token in line: 
 						
 						# chop off all front parens and append them. 
-						while (token[0] == '(' ):
+						while (token[0] == '(' and len(token) > 1):
 							self.tokens.append("(")
 							token = token[1:]
 						
 						# chop off all close parens
 						temp = []
-						while (token[len(token)-1] == ')'):
+						while (token[len(token)-1] == ')' and len(token) > 1):
 							temp.append(")")
 							token = token[:-1] # everything up till last element
 						
@@ -191,7 +193,7 @@ class BooleanPrefixer:
 							self.tokens.append(cparens)
 	
 		except:
-			print "Unable to open file: " + filename
+			print "Error reading file: " + filename
 			exit(0)
 			
 def main():
@@ -201,7 +203,6 @@ def main():
 		# Reads in the file. 
 		prefixer = BooleanPrefixer(sys.argv[1])
 		print prefixer.parse()
-		# print prefixer.tokens
 
 if __name__ == "__main__":
     main()
